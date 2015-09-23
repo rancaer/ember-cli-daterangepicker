@@ -14,8 +14,11 @@ export default Ember.Component.extend({
     let serverFormat = this.get('serverFormat');
     let start = this.get('start');
     let end = this.get('end');
+    let timezone = this.get('timezone');
     if (!Ember.isEmpty(start) && !Ember.isEmpty(end)) {
-      return moment(start, serverFormat).format(format) + this.get('separator') + moment(end, serverFormat).format(format);
+      start = moment(start, serverFormat);
+      end = moment(end, serverFormat);
+      return start.format(format) + this.get('separator') + end.format(format);
     }
     return '';
   }),
@@ -49,6 +52,15 @@ export default Ember.Component.extend({
     let startDate = momentStartDate.isValid() ? momentStartDate : undefined;
     let endDate = momentEndDate.isValid() ? momentEndDate : undefined;
 
+
+    let timezone = this.get('timezone');
+    if (timezone && startDate && endDate) {
+      startDate.tz(timezone);
+      endDate.tz(timezone);
+    }
+
+
+
     this.$('.daterangepicker-input').daterangepicker({
       locale: {
         cancelLabel: this.get('cancelLabel')
@@ -68,17 +80,26 @@ export default Ember.Component.extend({
     });
 
     this.$('.daterangepicker-input').on('show.daterangepicker', function(ev, picker) {
-      let serverFormat = self.get(serverFormat);
-      let startDate = moment(self.get('start'), serverFormat);
-      let endDate = moment(self.get('end'), serverFormat);
+      let format = self.get('format');
+      let startDate = moment(self.get('start'));
+      let endDate = moment(self.get('end'));
 
-      picker.setStartDate(startDate);
-      picker.setEndDate(endDate);
+      picker.setStartDate(startDate.format(format));
+      picker.setEndDate(endDate.format(format));
     });
 
     this.$('.daterangepicker-input').on('apply.daterangepicker', function(ev, picker) {
-      var start = picker.startDate.format(self.get('serverFormat'));
-      var end = picker.endDate.format(self.get('serverFormat'));
+
+      let start = picker.startDate;
+      let end = picker.endDate;
+
+      if (timezone) {
+        start.tz(timezone);
+        end.tz(timezone);
+      }
+
+      start = start.format(self.get('serverFormat'));
+      end = end.format(self.get('serverFormat'));
       var applyAction = self.get('applyAction');
 
       if (applyAction) {
