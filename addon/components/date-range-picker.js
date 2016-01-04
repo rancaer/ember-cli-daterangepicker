@@ -7,6 +7,7 @@ export default Ember.Component.extend({
   start: undefined,
   end: undefined,
   timePicker: false,
+  timePickerIncrement: 30,
   format: 'MMM D, YYYY',
   serverFormat: 'YYYY-MM-DD',
   rangeText: Ember.computed(function () {
@@ -30,6 +31,8 @@ export default Ember.Component.extend({
   buttonClasses: ['btn'],
   applyClass: null,
   cancelClass: null,
+  autoUpdateInput: false,
+  autoApply: false,
   ranges: {
     'Today': [moment(), moment()],
     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -68,7 +71,10 @@ export default Ember.Component.extend({
       format: this.get('format'),
       startDate: startDate,
       endDate: endDate,
+      autoUpdateInput: this.get('autoUpdateInput'),
+      autoApply: this.get('autoApply'),
       timePicker: this.get('timePicker'),
+      timePickerIncrement: this.get('timePickerIncrement'),
       ranges: this.get('ranges'),
       buttonClasses: this.get('buttonClasses'),
       applyClass: this.get('applyClass'),
