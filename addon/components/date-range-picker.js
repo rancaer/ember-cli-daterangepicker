@@ -87,8 +87,8 @@ export default Ember.Component.extend({
 
     this.$('.daterangepicker-input').on('show.daterangepicker', function(ev, picker) {
       let format = self.get('format');
-      let startDate = moment(self.get('start'), format);
-      let endDate = moment(self.get('end'), format);
+      let startDate = moment(self.get('start'), self.get('serverFormat'));
+      let endDate = moment(self.get('end'), self.get('serverFormat'));
 
       picker.setStartDate(startDate.format(format));
       picker.setEndDate(endDate.format(format));
